@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>送给妈妈的母亲节礼物</title>
+    <link href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&family=Ma+Shan+Zheng&family=ZCOOL+QingKe+HuangYou&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Ma Shan Zheng', cursive;
+            background: linear-gradient(135deg, #ffeef8 0%, #e8f5e9 50%, #fff3e0 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* 背景漂浮植物 */
+        .floating-leaf {
+            position: fixed;
+            opacity: 0.15;
+            pointer-events: none;
+            z-index: 0;
+            animation: float 15s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            33% { transform: translateY(-30px) rotate(120deg); }
+            66% { transform: translateY(15px) rotate(240deg); }
+        }
+
+        /* 页面容器 */
+        .page {
+            display: none;
+            min-height: 100vh;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .page.active {
+            display: flex;
+        }
+
+        /* ===== 信封页面 ===== */
+        .envelope-wrapper {
+            perspective: 1000px;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .envelope-wrapper:hover {
+            transform: scale(1.02);
+        }
+
+        .envelope {
+            width: 320px;
+            height: 220px;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: all 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .envelope-body {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(145deg, #f5e6d3, #e6d5c3);
+            border-radius: 0 0 12px 12px;
+            position: relative;
+            box-shadow: 
+                0 10px 30px rgba(0,0,0,0.15),
+                inset 0 1px 0 rgba(255,255,255,0.5);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 2;
+        }
+
+        .envelope-body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 110px;
+            background: linear-gradient(145deg, #e6d5c3, #d4c4b0);
+            clip-path: polygon(0 0, 50% 55%, 100% 0, 100% 100%, 0 100%);
+            border-radius: 12px 12px 0 0;
+            transform-origin: top;
+            transition: transform 0.6s 0.2s;
+            z-index: 3;
+        }
+
+        .envelope.open .envelope-body::before {
+            transform: rotateX(180deg);
+            z-index: 0;
+        }
+
+        .envelope-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 2;
+            transition: all 0.6s 0.4s;
+        }
+
+        .envelope.open .envelope-content {
+            opacity: 0;
+            transform: translate(-50%, -80%);
+        }
+
+        .heart-icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+            display: block;
+            animation: heartbeat 1.5s infinite;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+        }
+
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            14% { transform: scale(1.15); }
+            28% { transform: scale(1); }
+            42% { transform: scale(1.15); }
+        }
+
+        .envelope-title {
+            font-family: 'ZCOOL KuaiLe', cursive;
+            font-size: 32px;
+            color: #c75b5b;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+            letter-spacing: 2px;
+        }
+
+        .envelope-hint {
+            font-family: 'ZCOOL QingKe HuangYou', cursive;
+            font-size: 16px;
+            color: #8d6e63;
+            margin-top: 8px;
+            opacity: 0.8;
+        }
+
+        /* 信封上的植物装饰 */
+        .env-plant {
+            position: absolute;
+            font-size: 24px;
+            opacity: 0.6;
+            z-index: 4;
+        }
+
+        .env-plant.tl { top: 15px; left: 15px; transform: rotate(-20deg); }
+        .env-plant.tr { top: 15px; right: 15px; transform: rotate(20deg); }
+        .env-plant.bl { bottom: 15px; left: 20px; transform: rotate(-10deg); }
+        .env-plant.br { bottom: 15px; right: 20px; transform: rotate(10deg); }
+
+        /* ===== 信纸页面 ===== */
+        .letter-container {
+            max-width: 800px;
+            width: 100%;
+            background: linear-gradient(to bottom, #fffdf7, #fff9f0);
+            border-radius: 8px;
+            padding: 50px 40px;
+            box-shadow: 
+                0 20px 60px rgba(0,0,0,0.1),
+                0 0 0 1px rgba(0,0,0,0.05);
+            position: relative;
+            animation: letterAppear 1s ease-out;
+            background-image: 
+                repeating-linear-gradient(
+                    transparent,
+                    transparent 31px,
+                    #e8d5c4 31px,
+                    #e8d5c4 32px
+                );
+            line-height: 32px;
+        }
+
+        @keyframes letterAppear {
+            from { opacity: 0; transform: translateY(50px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        /* 信纸角落植物 */
+        .corner-plant {
+            position: absolute;
+            font-size: 40px;
+            opacity: 0.25;
+            pointer-events: none;
+        }
+
+        .corner-plant.top-left { top: -15px; left: -15px; transform: rotate(-45deg); }
+        .corner-plant.top-right { top: -10px; right: -10px; transform: rotate(45deg); }
+        .corner-plant.bottom-left { bottom: -15px; left: -10px; transform: rotate(-135deg); }
+        .corner-plant.bottom-right { bottom: -10px; right: -15px; transform: rotate(135deg); }
+
+        .letter-header {
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .letter-title {
+            font-family: 'ZCOOL KuaiLe', cursive;
+            font-size: 36px;
+            color: #d47676;
+            margin-bottom: 10px;
+            display: inline-block;
+            position: relative;
+        }
+
+        .letter-title::after {
+            content: '🌸';
+            position: absolute;
+            right: -40px;
+            top: -5px;
+            font-size: 28px;
+        }
+
+        .letter-title::before {
+            content: '🌿';
+            position: absolute;
+            left: -40px;
+            top: -5px;
+            font-size: 28px;
+        }
+
+        .letter-date {
+            font-family: 'ZCOOL QingKe HuangYou', cursive;
+            color: #a1887f;
+            font-size: 18px;
+        }
+
+        .letter-body {
+            font-size: 22px;
+            color: #5d4037;
+            margin-bottom: 30px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .letter-body p {
+            margin-bottom: 16px;
+            text-indent: 2em;
+        }
+
+        .placeholder {
+            background: linear-gradient(120deg, #fff3e0 0%, #ffe0b2 100%);
+            border-radius: 6px;
+            padding: 2px 8px;
+            border-bottom: 2px dashed #ffcc80;
+            color: #e65100;
+            font-family: 'ZCOOL KuaiLe', cursive;
+            font-size: 20px;
+        }
+
+        /* ===== 照片区域 ===== */
+        .photos-section {
+            margin: 40px 0;
+            position: relative;
+            z-index: 1;
+        }
+
+        .photos-title {
+            font-family: 'ZCOOL KuaiLe', cursive;
+            font-size: 24px;
+            color: #81c784;
+            text-align: center;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .photos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 25px;
+            justify-items: center;
+        }
+
+        .photo-frame {
+            width: 100%;
+            max-width: 220px;
+            background: white;
+            padding: 12px 12px 40px 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transform: rotate(var(--rotation));
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .photo-frame:hover {
+            transform: rotate(0deg) scale(1.05);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            z-index: 10;
+        }
+
+        .photo-frame::before {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 40px;
+            background: #ffccbc;
+            border-radius: 50%;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            z-index: 2;
+        }
+
+        .photo-frame:nth-child(1) { --rotation: -3deg; }
+        .photo-frame:nth-child(2) { --rotation: 2deg; }
+        .photo-frame:nth-child(3) { --rotation: -2deg; }
+
+        .photo-placeholder {
+            width: 100%;
+            aspect-ratio: 1;
+            background: linear-gradient(135deg, #f1f8e9 0%, #dcedc8 100%);
+            border: 2px dashed #aed581;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: #7cb342;
+            font-family: 'ZCOOL KuaiLe', cursive;
+            font-size: 14px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .photo-placeholder .plant-icon {
+            font-size: 40px;
+            margin-bottom: 8px;
+            opacity: 0.6;
+        }
+
+        .photo-frame img {
+            width: 100%;
+            aspect-ratio: 1;
+            object-fit: cover;
+            display: block;
+            border: 1px solid #eee;
+        }
+
+        .photo-caption {
+            position: absolute;
+            bottom: 10px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-family: 'ZCOOL QingKe HuangYou', cursive;
+            font-size: 16px;
+            color: #8d6e63;
+        }
+
+        /* 信纸底部 */
+        .letter-footer {
+            text-align: right;
+            margin-top: 40px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .signature {
+            font-family: 'Ma Shan Zheng', cursive;
+            font-size: 26px;
+            color: #c75b5b;
+        }
+
+        .signature-name {
+            font-family: 'ZCOOL KuaiLe', cursive;
+            font-size: 22px;
+            color: #8d6e63;
+            margin-top: 5px;
+        }
+
+        .stamp {
+            display: inline-block;
+            width: 80px;
+            height: 80px;
+            border: 3px solid #e57373;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'ZCOOL KuaiLe', cursive;
+            color: #e57373;
+            font-size: 14px;
+            transform: rotate(-15deg);
+            opacity: 0.8;
+            margin-top: 15px;
+            position: relative;
+        }
+
+        .stamp::before {
+            content: '❤️';
+            position: absolute;
+            font-size: 20px;
+            top: -10px;
+            right: -5px;
+        }
+
+        /* 装饰分隔线 */
+        .divider {
+            text-align: center;
+            margin: 25px 0;
+            font-size: 24px;
+            letter-spacing: 10px;
+            opacity: 0.4;
+            color: #81c784;
+        }
+
+        /* 响应式 */
+        @media (max-width: 600px) {
+            .letter-container {
+                padding: 30px 20px;
+            }
+            .letter-title {
+                font-size: 28px;
+            }
+            .letter-body {
+                font-size: 18px;
+            }
+            .photos-grid {
+                grid-template-columns: 1fr;
+            }
+            .envelope {
+                width: 280px;
+                height: 190px;
+            }
+        }
+
+        /* 打开按钮 */
+        .open-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #fff;
+            border: 2px solid #81c784;
+            color: #4caf50;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-family: 'ZCOOL KuaiLe', cursive;
+            font-size: 16px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+            z-index: 100;
+            display: none;
+        }
+
+        .open-btn:hover {
+            background: #81c784;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .open-btn.show {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 提示 */
+        .edit-hint {
+            position: fixed;
+            top: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255,255,255,0.95);
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-family: 'ZCOOL QingKe HuangYou', cursive;
+            font-size: 14px;
+            color: #8d6e63;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            z-index: 100;
+            border: 1px solid #e8d5c4;
+            display: none;
+        }
+
+        .edit-hint.show {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+    </style>
+<base target="_blank">
+</head>
+<body>
+
+    <!-- 背景漂浮植物 -->
+    <div class="floating-leaf" style="top:10%; left:5%; font-size:30px; animation-delay:0s;">🌿</div>
+    <div class="floating-leaf" style="top:20%; right:8%; font-size:25px; animation-delay:2s;">🍃</div>
+    <div class="floating-leaf" style="top:60%; left:3%; font-size:35px; animation-delay:4s;">🌱</div>
+    <div class="floating-leaf" style="top:70%; right:5%; font-size:28px; animation-delay:1s;">🌾</div>
+    <div class="floating-leaf" style="top:40%; left:8%; font-size:22px; animation-delay:3s;">🌵</div>
+    <div class="floating-leaf" style="top:85%; left:15%; font-size:32px; animation-delay:5s;">🌿</div>
+
+    <!-- 提示 -->
+    <div class="edit-hint" id="editHint">💡 提示：用记事本打开这个文件，搜索「【】」就能找到所有要修改的地方哦</div>
+
+    <!-- ===== 第一页：信封 ===== -->
+    <div class="page active" id="page1">
+        <div class="envelope-wrapper" onclick="openLetter()">
+            <div class="envelope" id="envelope">
+                <div class="envelope-body">
+                    <div class="env-plant tl">🌿</div>
+                    <div class="env-plant tr">🌸</div>
+                    <div class="env-plant bl">🍀</div>
+                    <div class="env-plant br">🌷</div>
+
+                    <div class="envelope-content">
+                        <span class="heart-icon">❤️</span>
+                        <div class="envelope-title">送给妈妈</div>
+                        <div class="envelope-hint">点击打开这封信 ✉️</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== 第二页：信纸 ===== -->
+    <div class="page" id="page2">
+        <div class="letter-container">
+            <!-- 角落植物装饰 -->
+            <div class="corner-plant top-left">🌿</div>
+            <div class="corner-plant top-right">🌸</div>
+            <div class="corner-plant bottom-left">🍃</div>
+            <div class="corner-plant bottom-right">🌷</div>
+
+            <div class="letter-header">
+                <h1 class="letter-title">亲爱的妈妈</h1>
+                <div class="letter-date">母亲节快乐 · 2026年5月</div>
+            </div>
+
+            <div class="divider">* ✿ *</div>
+
+            <div class="letter-body">
+                <p>
+                    <!-- 【1. 在这里写下你想对妈妈说的话】 -->
+                    <span class="placeholder">【在这里写下你想对妈妈说的第一段话～】</span>
+                </p>
+                <p>
+                    <!-- 【2. 继续写下去】 -->
+                    <span class="placeholder">【这里可以写你们之间的回忆，或者你想感谢她的事情。】</span>
+                </p>
+                <p>
+                    <!-- 【3. 最后一段】 -->
+                    <span class="placeholder">【最后写上你的祝福和爱意吧！】</span>
+                </p>
+            </div>
+
+            <div class="divider">* 🌿 *</div>
+
+            <!-- 照片区域 -->
+            <div class="photos-section">
+                <div class="photos-title">
+                    <span>🌷</span>
+                    <span>我们的美好时光</span>
+                    <span>🌷</span>
+                </div>
+                <div class="photos-grid">
+                    <!-- 照片1 -->
+                    <div class="photo-frame">
+                        <div class="photo-placeholder">
+                            <span class="plant-icon">🌸</span>
+                            <div>【照片1】</div>
+                            <div style="font-size:12px; margin-top:4px;">替换 src 属性</div>
+                        </div>
+                        <!-- 【4. 替换照片：把下面这行的 src="" 里的内容换成你的图片链接】 -->
+                        <!-- <img src="你的图片链接.jpg" alt="照片1"> -->
+                        <div class="photo-caption">【照片1说明】</div>
+                    </div>
+
+                    <!-- 照片2 -->
+                    <div class="photo-frame">
+                        <div class="photo-placeholder">
+                            <span class="plant-icon">🌿</span>
+                            <div>【照片2】</div>
+                            <div style="font-size:12px; margin-top:4px;">替换 src 属性</div>
+                        </div>
+                        <!-- 【5. 第二张照片】 -->
+                        <!-- <img src="你的图片链接.jpg" alt="照片2"> -->
+                        <div class="photo-caption">【照片2说明】</div>
+                    </div>
+
+                    <!-- 照片3 -->
+                    <div class="photo-frame">
+                        <div class="photo-placeholder">
+                            <span class="plant-icon">🌻</span>
+                            <div>【照片3】</div>
+                            <div style="font-size:12px; margin-top:4px;">替换 src 属性</div>
+                        </div>
+                        <!-- 【6. 第三张照片】 -->
+                        <!-- <img src="你的图片链接.jpg" alt="照片3"> -->
+                        <div class="photo-caption">【照片3说明】</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="divider">* 🌸 *</div>
+
+            <div class="letter-footer">
+                <div class="signature">爱你的</div>
+                <!-- 【7. 在这里写上你的名字】 -->
+                <div class="signature-name"><span class="placeholder">【你的名字】</span></div>
+                <div class="stamp">
+                    <div>母亲节<br>快乐</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 返回按钮 -->
+    <button class="open-btn" id="backBtn" onclick="backToEnvelope()">💌 再看一次信封</button>
+
+    <script>
+        function openLetter() {
+            const envelope = document.getElementById('envelope');
+            const page1 = document.getElementById('page1');
+            const page2 = document.getElementById('page2');
+            const backBtn = document.getElementById('backBtn');
+            const editHint = document.getElementById('editHint');
+
+            envelope.classList.add('open');
+
+            setTimeout(() => {
+                page1.classList.remove('active');
+                page2.classList.add('active');
+                backBtn.classList.add('show');
+                editHint.classList.add('show');
+
+                // 5秒后隐藏提示
+                setTimeout(() => {
+                    editHint.classList.remove('show');
+                }, 8000);
+            }, 800);
+        }
+
+        function backToEnvelope() {
+            const page1 = document.getElementById('page1');
+            const page2 = document.getElementById('page2');
+            const envelope = document.getElementById('envelope');
+            const backBtn = document.getElementById('backBtn');
+
+            page2.classList.remove('active');
+            page1.classList.add('active');
+            backBtn.classList.remove('show');
+
+            setTimeout(() => {
+                envelope.classList.remove('open');
+            }, 300);
+        }
+
+        // 添加一些随机的叶子飘落效果
+        function createFallingLeaf() {
+            const leaf = document.createElement('div');
+            leaf.innerHTML = ['🌿','🍃','🌸','🌼','🍀'][Math.floor(Math.random()*5)];
+            leaf.style.position = 'fixed';
+            leaf.style.left = Math.random() * 100 + '%';
+            leaf.style.top = '-30px';
+            leaf.style.fontSize = (Math.random() * 15 + 15) + 'px';
+            leaf.style.opacity = '0.3';
+            leaf.style.pointerEvents = 'none';
+            leaf.style.zIndex = '0';
+            leaf.style.transition = 'all ' + (Math.random() * 3 + 4) + 's linear';
+            document.body.appendChild(leaf);
+
+            setTimeout(() => {
+                leaf.style.top = '110vh';
+                leaf.style.transform = 'rotate(' + (Math.random() * 360) + 'deg)';
+            }, 100);
+
+            setTimeout(() => {
+                leaf.remove();
+            }, 7000);
+        }
+
+        setInterval(createFallingLeaf, 3000);
+    </script>
+</body>
+</html>
